@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/FarStep131/go-jwt/pkg/util"
 	"github.com/gin-gonic/gin"
+	"github.com/mikaijun/anli/pkg/util"
 )
 
 func Auth() gin.HandlerFunc {

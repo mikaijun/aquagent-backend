@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"github.com/FarStep131/go-jwt/pkg/myerror"
-	"github.com/FarStep131/go-jwt/pkg/usecase"
 	"github.com/gin-gonic/gin"
+	"github.com/mikaijun/anli/pkg/myerror"
+	"github.com/mikaijun/anli/pkg/usecase"
 )
 
 type Handler interface {
