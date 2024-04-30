@@ -45,3 +45,14 @@ func (ri *repositoryImpl) GetUserByEmail(ctx context.Context, email string) (*mo
 
 	return &u, nil
 }
+
+func (ri *repositoryImpl) GetUserById(ctx context.Context, id int64) (*model.User, error) {
+	u := model.User{}
+	query := "SELECT id, username, email, password FROM users WHERE id = $1"
+	err := ri.db.QueryRowContext(ctx, query, id).Scan(&u.ID, &u.Username, &u.Email, &u.Password)
+	if err != nil {
+		return &model.User{}, nil
+	}
+
+	return &u, nil
+}

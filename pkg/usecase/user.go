@@ -14,6 +14,7 @@ import (
 type UseCase interface {
 	Signup(c context.Context, username, email, password string) (*model.User, error)
 	Login(c context.Context, email, password string) (string, *model.User, error)
+	Fetch(c context.Context, userId int64) (*model.User, error)
 }
 
 type useCase struct {
@@ -84,4 +85,18 @@ func (uc *useCase) Login(c context.Context, email, password string) (string, *mo
 	}
 
 	return signedString, user, nil
+}
+
+func (uc *useCase) Fetch(c context.Context, userId int64) (*model.User, error) {
+	ctx, cancel := context.WithTimeout(c, uc.timeout)
+	defer cancel()
+
+	user, err := uc.repository.GetUserById(ctx, userId)
+	if err != nil {
+		return nil, &myerror.InternalServerError{Err: err}
+	}
+	if user.ID == 0 {
+		return nil, &myerror.BadRequestError{Err: errors.New("user is not exist")}
+	}
+	return user, nil
 }

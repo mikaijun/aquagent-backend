@@ -15,7 +15,7 @@ type MyJWTClaims struct {
 	jwt.RegisteredClaims
 }
 
-func getJWTSecret() []byte {
+func GetJWTSecret() []byte {
 	return []byte(os.Getenv("JWT_SECRET_KEY"))
 }
 
@@ -29,7 +29,7 @@ func GenerateSignedString(userId int64, username string) (string, error) {
 		},
 	})
 
-	return token.SignedString(getJWTSecret())
+	return token.SignedString(GetJWTSecret())
 }
 
 func ValidateToken(signedToken string) (err error) {
@@ -40,7 +40,7 @@ func ValidateToken(signedToken string) (err error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, errors.New("unexpected signing method")
 			}
-			return getJWTSecret(), nil
+			return GetJWTSecret(), nil
 		},
 	)
 

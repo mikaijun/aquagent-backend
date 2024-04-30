@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mikaijun/anli/pkg/myerror"
@@ -12,6 +14,7 @@ type Handler interface {
 	HandleSignup(c *gin.Context)
 	HandleLogin(c *gin.Context)
 	HandleLogout(c *gin.Context)
+	HandleFetchUser(c *gin.Context)
 }
 
 type handler struct {
@@ -112,5 +115,52 @@ func (h *handler) HandleLogin(c *gin.Context) {
 
 func (h *handler) HandleLogout(c *gin.Context) {
 	c.SetCookie("jwt", "", -1, "", "", false, true)
+	c.SetCookie("userId", "", -1, "", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"message": "logout successful"})
+}
+
+func (h *handler) HandleFetchUser(c *gin.Context) {
+	type (
+		response struct {
+			ID       int64  `json:"id"`
+			Username string `json:"username"`
+			Email    string `json:"email"`
+		}
+	)
+	userId, err := c.Cookie("userId")
+
+	if userId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.New("no userId set in userId").Error()})
+		c.Abort()
+		return
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.New("userId is not found").Error()})
+		c.Abort()
+		return
+	}
+
+	intUserId, _ := strconv.ParseInt(userId, 10, 64)
+	user, err := h.useCase.Fetch(c.Request.Context(), intUserId)
+
+	if err != nil {
+		switch e := err.(type) {
+		case *myerror.InternalServerError:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": e.Err.Error()})
+			return
+		case *myerror.BadRequestError:
+			c.JSON(http.StatusBadRequest, gin.H{"error": e.Err.Error()})
+			return
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, &response{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+	})
 }

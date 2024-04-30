@@ -2,7 +2,6 @@ package server
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mikaijun/anli/pkg/infrastructure"
@@ -14,13 +13,7 @@ import (
 
 var r *gin.Engine
 
-func Ping(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "pong"})
-}
-
-// サーバ起動処理
 func Serve(addr string) {
-	// 依存性の注入
 	userRepoImpl := repositoryimpl.NewRepositoryImpl(infrastructure.Conn)
 	userUseCase := usecase.NewUseCase(userRepoImpl)
 	userHandler := handler.NewHandler(userUseCase)
@@ -32,7 +25,7 @@ func Serve(addr string) {
 	r.GET("/logout", userHandler.HandleLogout)
 
 	secured := r.Group("/secured").Use(middleware.Auth())
-	secured.GET("/ping", Ping)
+	secured.GET("/user", userHandler.HandleFetchUser)
 
 	log.Println("Server running...")
 	if err := r.Run(addr); err != nil {
