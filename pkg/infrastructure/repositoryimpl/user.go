@@ -19,7 +19,7 @@ type repositoryImpl struct {
 	db DBTX
 }
 
-func NewRepositoryImpl(db DBTX) repository.Repository {
+func NewRepositoryImpl(db DBTX) repository.UserRepository {
 	return &repositoryImpl{db: db}
 }
 

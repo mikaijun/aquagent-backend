@@ -18,11 +18,11 @@ type UseCase interface {
 }
 
 type useCase struct {
-	repository repository.Repository
+	repository repository.UserRepository
 	timeout    time.Duration
 }
 
-func NewUseCase(userRepo repository.Repository) UseCase {
+func NewUseCase(userRepo repository.UserRepository) UseCase {
 	return &useCase{
 		repository: userRepo,
 		timeout:    time.Duration(2) * time.Second,

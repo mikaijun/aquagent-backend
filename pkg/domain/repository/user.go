@@ -6,7 +6,7 @@ import (
 	"github.com/mikaijun/anli/pkg/domain/model"
 )
 
-type Repository interface {
+type UserRepository interface {
 	CreateUser(ctx context.Context, user *model.User) (*model.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*model.User, error)
 	GetUserById(ctx context.Context, id int64) (*model.User, error)

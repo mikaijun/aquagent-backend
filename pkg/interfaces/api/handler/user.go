@@ -105,7 +105,10 @@ func (h *handler) HandleLogin(c *gin.Context) {
 		}
 	}
 
+	convertedUserId := strconv.FormatInt(user.ID, 10)
+
 	c.SetCookie("jwt", signedString, 60*60*24, "/", "localhost", false, true)
+	c.SetCookie("userId", convertedUserId, 60*60*24, "/", "localhost", false, true)
 
 	c.JSON(http.StatusOK, &response{
 		ID:       user.ID,
