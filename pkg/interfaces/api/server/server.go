@@ -15,7 +15,7 @@ var r *gin.Engine
 
 func Serve(addr string) {
 	userRepoImpl := repositoryimpl.NewUserRepositoryImpl(infrastructure.Conn)
-	userUseCase := usecase.NewUseCase(userRepoImpl)
+	userUseCase := usecase.NewUserUseCase(userRepoImpl)
 	userHandler := handler.NewHandler(userUseCase)
 
 	r = gin.Default()

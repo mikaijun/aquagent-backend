@@ -10,7 +10,7 @@ import (
 	"github.com/mikaijun/anli/pkg/usecase"
 )
 
-type Handler interface {
+type UserHandler interface {
 	HandleSignup(c *gin.Context)
 	HandleLogin(c *gin.Context)
 	HandleLogout(c *gin.Context)
@@ -18,10 +18,10 @@ type Handler interface {
 }
 
 type handler struct {
-	useCase usecase.UseCase
+	useCase usecase.UserUseCase
 }
 
-func NewHandler(userUseCase usecase.UseCase) Handler {
+func NewHandler(userUseCase usecase.UserUseCase) UserHandler {
 	return &handler{
 		useCase: userUseCase,
 	}

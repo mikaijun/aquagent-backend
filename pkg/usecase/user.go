@@ -11,25 +11,25 @@ import (
 	"github.com/mikaijun/anli/pkg/util"
 )
 
-type UseCase interface {
+type UserUseCase interface {
 	Signup(c context.Context, username, email, password string) (*model.User, error)
 	Login(c context.Context, email, password string) (string, *model.User, error)
 	Fetch(c context.Context, userId int64) (*model.User, error)
 }
 
-type useCase struct {
+type userUseCase struct {
 	repository repository.UserRepository
 	timeout    time.Duration
 }
 
-func NewUseCase(userRepo repository.UserRepository) UseCase {
-	return &useCase{
+func NewUserUseCase(userRepo repository.UserRepository) UserUseCase {
+	return &userUseCase{
 		repository: userRepo,
 		timeout:    time.Duration(2) * time.Second,
 	}
 }
 
-func (uc *useCase) Signup(c context.Context, username, email, password string) (*model.User, error) {
+func (uc *userUseCase) Signup(c context.Context, username, email, password string) (*model.User, error) {
 	ctx, cancel := context.WithTimeout(c, uc.timeout)
 	defer cancel()
 
@@ -62,7 +62,7 @@ func (uc *useCase) Signup(c context.Context, username, email, password string) (
 	return user, nil
 }
 
-func (uc *useCase) Login(c context.Context, email, password string) (string, *model.User, error) {
+func (uc *userUseCase) Login(c context.Context, email, password string) (string, *model.User, error) {
 	ctx, cancel := context.WithTimeout(c, uc.timeout)
 	defer cancel()
 
@@ -87,7 +87,7 @@ func (uc *useCase) Login(c context.Context, email, password string) (string, *mo
 	return signedString, user, nil
 }
 
-func (uc *useCase) Fetch(c context.Context, userId int64) (*model.User, error) {
+func (uc *userUseCase) Fetch(c context.Context, userId int64) (*model.User, error) {
 	ctx, cancel := context.WithTimeout(c, uc.timeout)
 	defer cancel()
 
