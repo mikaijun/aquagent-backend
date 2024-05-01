@@ -14,7 +14,7 @@ import (
 var r *gin.Engine
 
 func Serve(addr string) {
-	userRepoImpl := repositoryimpl.NewRepositoryImpl(infrastructure.Conn)
+	userRepoImpl := repositoryimpl.NewUserRepositoryImpl(infrastructure.Conn)
 	userUseCase := usecase.NewUseCase(userRepoImpl)
 	userHandler := handler.NewHandler(userUseCase)
 

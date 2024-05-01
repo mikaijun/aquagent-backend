@@ -2,24 +2,18 @@ package repositoryimpl
 
 import (
 	"context"
-	"database/sql"
+
+	"github.com/mikaijun/anli/pkg/infrastructure"
 
 	"github.com/mikaijun/anli/pkg/domain/model"
 	"github.com/mikaijun/anli/pkg/domain/repository"
 )
 
-type DBTX interface {
-	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
-	PrepareContext(context.Context, string) (*sql.Stmt, error)
-	QueryContext(context.Context, string, ...interface{}) (*sql.Rows, error)
-	QueryRowContext(context.Context, string, ...interface{}) *sql.Row
-}
-
 type repositoryImpl struct {
-	db DBTX
+	db infrastructure.DBTX
 }
 
-func NewRepositoryImpl(db DBTX) repository.UserRepository {
+func NewUserRepositoryImpl(db infrastructure.DBTX) repository.UserRepository {
 	return &repositoryImpl{db: db}
 }
 
