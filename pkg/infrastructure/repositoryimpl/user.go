@@ -9,15 +9,15 @@ import (
 	"github.com/mikaijun/anli/pkg/domain/repository"
 )
 
-type repositoryImpl struct {
+type userRepositoryImpl struct {
 	db infrastructure.DBTX
 }
 
 func NewUserRepositoryImpl(db infrastructure.DBTX) repository.UserRepository {
-	return &repositoryImpl{db: db}
+	return &userRepositoryImpl{db: db}
 }
 
-func (ri *repositoryImpl) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
+func (ri *userRepositoryImpl) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
 	var lastInsertId int
 	query := "INSERT INTO users(username, email, password) VALUES ($1, $2, $3) returning id"
 	err := ri.db.QueryRowContext(ctx, query, user.Username, user.Email, user.Password).Scan(&lastInsertId)
@@ -29,7 +29,7 @@ func (ri *repositoryImpl) CreateUser(ctx context.Context, user *model.User) (*mo
 	return user, nil
 }
 
-func (ri *repositoryImpl) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
+func (ri *userRepositoryImpl) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	u := model.User{}
 	query := "SELECT id, username, email, password FROM users WHERE email = $1"
 	err := ri.db.QueryRowContext(ctx, query, email).Scan(&u.ID, &u.Username, &u.Email, &u.Password)
@@ -40,7 +40,7 @@ func (ri *repositoryImpl) GetUserByEmail(ctx context.Context, email string) (*mo
 	return &u, nil
 }
 
-func (ri *repositoryImpl) GetUserById(ctx context.Context, id int64) (*model.User, error) {
+func (ri *userRepositoryImpl) GetUserById(ctx context.Context, id int64) (*model.User, error) {
 	u := model.User{}
 	query := "SELECT id, username, email, password FROM users WHERE id = $1"
 	err := ri.db.QueryRowContext(ctx, query, id).Scan(&u.ID, &u.Username, &u.Email, &u.Password)
