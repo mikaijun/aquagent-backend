@@ -14,11 +14,11 @@ var r *gin.Engine
 
 func Serve(addr string) {
 	userRepoImpl := repositoryimpl.NewUserRepositoryImpl(infrastructure.Conn)
-	questionRepoImpl := repositoryimpl.NewQuestionRepositoryImpl(infrastructure.Conn)
+	waterRepoImpl := repositoryimpl.NewWaterRepositoryImpl(infrastructure.Conn)
 	userUseCase := usecase.NewUserUseCase(userRepoImpl)
-	questionUseCase := usecase.NewQuestionUseCase(questionRepoImpl)
+	waterUseCase := usecase.NewWaterUseCase(waterRepoImpl)
 	userHandler := handler.NewUserHandler(userUseCase)
-	questionHandler := handler.NewQuestionHandler(questionUseCase)
+	waterHandler := handler.NewWaterHandler(waterUseCase)
 
 	r = gin.Default()
 
@@ -29,10 +29,10 @@ func Serve(addr string) {
 	secured := r.Group("/secured").Use(Middleware())
 
 	secured.GET("/user", userHandler.HandleFetchUser)
-	secured.GET("/questions", questionHandler.HandleGetAll)
-	secured.GET("/question/:id", questionHandler.HandleGet)
-	secured.POST("/question", questionHandler.HandleCreate)
-	secured.PUT("/question/:id", questionHandler.HandleUpdate)
+	secured.GET("/waters", waterHandler.HandleGetAll)
+	secured.GET("/water/:id", waterHandler.HandleGet)
+	secured.POST("/water", waterHandler.HandleCreate)
+	secured.PUT("/water/:id", waterHandler.HandleUpdate)
 
 	log.Println("Server running...")
 	if err := r.Run(addr); err != nil {

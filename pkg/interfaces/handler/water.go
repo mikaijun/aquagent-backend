@@ -11,24 +11,24 @@ import (
 	"github.com/mikaijun/aquagent/pkg/util"
 )
 
-type QuestionHandler interface {
+type WaterHandler interface {
 	HandleGet(c *gin.Context)
 	HandleGetAll(c *gin.Context)
 	HandleCreate(c *gin.Context)
 	HandleUpdate(c *gin.Context)
 }
 
-type questionHandler struct {
-	useCase usecase.QuestionUseCase
+type waterHandler struct {
+	useCase usecase.WaterUseCase
 }
 
-func NewQuestionHandler(questionUseCase usecase.QuestionUseCase) QuestionHandler {
-	return &questionHandler{
-		useCase: questionUseCase,
+func NewWaterHandler(waterUseCase usecase.WaterUseCase) WaterHandler {
+	return &waterHandler{
+		useCase: waterUseCase,
 	}
 }
 
-func (h *questionHandler) HandleGet(c *gin.Context) {
+func (h *waterHandler) HandleGet(c *gin.Context) {
 	type response struct {
 		ID        int64  `json:"id"`
 		Title     string `json:"title"`
@@ -44,37 +44,37 @@ func (h *questionHandler) HandleGet(c *gin.Context) {
 		return
 	}
 
-	question, err := h.useCase.Get(c.Request.Context(), id)
+	water, err := h.useCase.Get(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, &response{
-		ID:        question.ID,
-		Title:     question.Title,
-		Content:   question.Content,
-		FilePath:  question.FilePath,
-		CreatedAt: question.CreatedAt,
-		UpdatedAt: question.UpdatedAt,
+		ID:        water.ID,
+		Title:     water.Title,
+		Content:   water.Content,
+		FilePath:  water.FilePath,
+		CreatedAt: water.CreatedAt,
+		UpdatedAt: water.UpdatedAt,
 	})
 }
 
-func (h *questionHandler) HandleGetAll(c *gin.Context) {
+func (h *waterHandler) HandleGetAll(c *gin.Context) {
 	userId, err := util.FindUserIdByCookie(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	questions, err := h.useCase.GetAll(c.Request.Context(), userId)
+	waters, err := h.useCase.GetAll(c.Request.Context(), userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, questions)
+	c.JSON(http.StatusOK, waters)
 }
 
-func (h *questionHandler) HandleCreate(c *gin.Context) {
+func (h *waterHandler) HandleCreate(c *gin.Context) {
 	type (
 		request struct {
 			Title   string `json:"title" binding:"required"`
@@ -105,7 +105,7 @@ func (h *questionHandler) HandleCreate(c *gin.Context) {
 		return
 	}
 
-	question := &model.Question{
+	water := &model.Water{
 		Title:     requestBody.Title,
 		Content:   requestBody.Content,
 		UserID:    userId,
@@ -115,19 +115,19 @@ func (h *questionHandler) HandleCreate(c *gin.Context) {
 		DeletedAt: "",
 	}
 
-	question, err = h.useCase.Create(c.Request.Context(), question)
+	water, err = h.useCase.Create(c.Request.Context(), water)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, &response{
-		ID:      question.ID,
-		Title:   question.Title,
-		Content: question.Content,
+		ID:      water.ID,
+		Title:   water.Title,
+		Content: water.Content,
 	})
 }
 
-func (h *questionHandler) HandleUpdate(c *gin.Context) {
+func (h *waterHandler) HandleUpdate(c *gin.Context) {
 	type (
 		request struct {
 			Title    string `json:"title" binding:"required"`
@@ -163,7 +163,7 @@ func (h *questionHandler) HandleUpdate(c *gin.Context) {
 		return
 	}
 
-	question := &model.Question{
+	water := &model.Water{
 		ID:        id,
 		Title:     requestBody.Title,
 		Content:   requestBody.Content,
@@ -174,18 +174,18 @@ func (h *questionHandler) HandleUpdate(c *gin.Context) {
 		DeletedAt: "",
 	}
 
-	question, err = h.useCase.Update(c.Request.Context(), question)
+	water, err = h.useCase.Update(c.Request.Context(), water)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, &response{
-		ID:        question.ID,
-		Title:     question.Title,
-		Content:   question.Content,
-		FilePath:  question.FilePath,
-		CreatedAt: question.CreatedAt,
-		UpdatedAt: question.UpdatedAt,
+		ID:        water.ID,
+		Title:     water.Title,
+		Content:   water.Content,
+		FilePath:  water.FilePath,
+		CreatedAt: water.CreatedAt,
+		UpdatedAt: water.UpdatedAt,
 	})
 }
