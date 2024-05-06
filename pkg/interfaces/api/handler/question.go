@@ -12,6 +12,7 @@ import (
 
 type QuestionHandler interface {
 	HandleCreate(c *gin.Context)
+	HandleGetAll(c *gin.Context)
 }
 
 type questionHandler struct {
@@ -31,9 +32,14 @@ func (h *questionHandler) HandleCreate(c *gin.Context) {
 			Content string `json:"content" binding:"required"`
 		}
 		response struct {
-			ID      int64  `json:"id"`
-			Title   string `json:"title"`
-			Content string `json:"content"`
+			ID        int64  `json:"id"`
+			UserID    int64  `json:"user_id"`
+			Title     string `json:"title"`
+			Content   string `json:"content"`
+			FilePath  string `json:"file_path"`
+			CreatedAt string `json:"created_at"`
+			UpdatedAt string `json:"updated_at"`
+			DeletedAt string `json:"deleted_at"`
 		}
 	)
 
@@ -54,8 +60,10 @@ func (h *questionHandler) HandleCreate(c *gin.Context) {
 		Title:     requestBody.Title,
 		Content:   requestBody.Content,
 		UserID:    userId,
+		FilePath:  "",
 		CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
 		UpdatedAt: time.Now().Format("2006-01-02 15:04:05"),
+		DeletedAt: "",
 	}
 
 	question, err = h.useCase.Create(c.Request.Context(), question)
@@ -63,5 +71,24 @@ func (h *questionHandler) HandleCreate(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, question)
+	c.JSON(http.StatusOK, &response{
+		ID:      question.ID,
+		Title:   question.Title,
+		Content: question.Content,
+	})
+}
+
+func (h *questionHandler) HandleGetAll(c *gin.Context) {
+	userId, err := util.FindUserIdByCookie(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	questions, err := h.useCase.GetAll(c.Request.Context(), userId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, questions)
 }
