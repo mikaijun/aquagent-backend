@@ -17,17 +17,17 @@ type UserHandler interface {
 	HandleFetchUser(c *gin.Context)
 }
 
-type handler struct {
+type userHandler struct {
 	useCase usecase.UserUseCase
 }
 
-func NewHandler(userUseCase usecase.UserUseCase) UserHandler {
-	return &handler{
+func NewUserHandler(userUseCase usecase.UserUseCase) UserHandler {
+	return &userHandler{
 		useCase: userUseCase,
 	}
 }
 
-func (h *handler) HandleSignup(c *gin.Context) {
+func (h *userHandler) HandleSignup(c *gin.Context) {
 	type (
 		request struct {
 			Username string `json:"username" binding:"required"`
@@ -70,7 +70,7 @@ func (h *handler) HandleSignup(c *gin.Context) {
 	})
 }
 
-func (h *handler) HandleLogin(c *gin.Context) {
+func (h *userHandler) HandleLogin(c *gin.Context) {
 	type (
 		request struct {
 			Email    string `json:"email" binding:"required,email"`
@@ -116,13 +116,13 @@ func (h *handler) HandleLogin(c *gin.Context) {
 	})
 }
 
-func (h *handler) HandleLogout(c *gin.Context) {
+func (h *userHandler) HandleLogout(c *gin.Context) {
 	c.SetCookie("jwt", "", -1, "", "", false, true)
 	c.SetCookie("userId", "", -1, "", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"message": "logout successful"})
 }
 
-func (h *handler) HandleFetchUser(c *gin.Context) {
+func (h *userHandler) HandleFetchUser(c *gin.Context) {
 	type (
 		response struct {
 			ID       int64  `json:"id"`

@@ -18,7 +18,7 @@ func Serve(addr string) {
 	questionRepoImpl := repositoryimpl.NewQuestionRepositoryImpl(infrastructure.Conn)
 	userUseCase := usecase.NewUserUseCase(userRepoImpl)
 	questionUseCase := usecase.NewQuestionUseCase(questionRepoImpl)
-	userHandler := handler.NewHandler(userUseCase)
+	userHandler := handler.NewUserHandler(userUseCase)
 	questionHandler := handler.NewQuestionHandler(questionUseCase)
 
 	r = gin.Default()
