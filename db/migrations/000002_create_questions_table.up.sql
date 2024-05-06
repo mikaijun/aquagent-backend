@@ -1,4 +1,4 @@
-CREATE TABLE "question" (
+CREATE TABLE "questions" (
   "id" bigserial PRIMARY KEY,
   "user_id" bigint REFERENCES users(id),
   "title" varchar,

@@ -19,30 +19,17 @@ func NewQuestionRepositoryImpl(db infrastructure.DBTX) repository.QuestionReposi
 
 func (ri *questionRepositoryImpl) CreateQuestion(ctx context.Context, question *model.Question) (*model.Question, error) {
 	var lastInsertId int
-	query := `
-		INSERT INTO questions (
-			user_id,
-			title,
-			content,
-			file_path,
-			created_at,
-			updated_at,
-			deleted_at
-		)
-		VALUES (
-			$1, $2, $3, $4, $5, $6, $7
-		)
-	returning id
-	`
+	query := "INSERT INTO questions (user_id, title, content, file_path, created_at, updated_at, deleted_at) VALUES ($1, $2, $3, $4, $5, $6, $7) returning id"
 	err := ri.db.QueryRowContext(
 		ctx,
 		query,
 		question.UserID,
 		question.Title,
+		question.Content,
 		question.FilePath,
 		question.CreatedAt,
 		question.UpdatedAt,
-		question.DeletedAt,
+		nil,
 	).Scan(&lastInsertId)
 	if err != nil {
 		return &model.Question{}, err

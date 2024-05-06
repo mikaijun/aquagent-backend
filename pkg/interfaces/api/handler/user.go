@@ -1,13 +1,13 @@
 package handler
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mikaijun/anli/pkg/myerror"
 	"github.com/mikaijun/anli/pkg/usecase"
+	"github.com/mikaijun/anli/pkg/util"
 )
 
 type UserHandler interface {
@@ -130,22 +130,15 @@ func (h *handler) HandleFetchUser(c *gin.Context) {
 			Email    string `json:"email"`
 		}
 	)
-	userId, err := c.Cookie("userId")
 
-	if userId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.New("no userId set in userId").Error()})
-		c.Abort()
-		return
-	}
+	userId, err := util.FindUserIdByCookie(c)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errors.New("userId is not found").Error()})
-		c.Abort()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	intUserId, _ := strconv.ParseInt(userId, 10, 64)
-	user, err := h.useCase.Fetch(c.Request.Context(), intUserId)
+	user, err := h.useCase.Fetch(c.Request.Context(), userId)
 
 	if err != nil {
 		switch e := err.(type) {

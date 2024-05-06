@@ -15,8 +15,11 @@ var r *gin.Engine
 
 func Serve(addr string) {
 	userRepoImpl := repositoryimpl.NewUserRepositoryImpl(infrastructure.Conn)
+	questionRepoImpl := repositoryimpl.NewQuestionRepositoryImpl(infrastructure.Conn)
 	userUseCase := usecase.NewUserUseCase(userRepoImpl)
+	questionUseCase := usecase.NewQuestionUseCase(questionRepoImpl)
 	userHandler := handler.NewHandler(userUseCase)
+	questionHandler := handler.NewQuestionHandler(questionUseCase)
 
 	r = gin.Default()
 
@@ -26,6 +29,7 @@ func Serve(addr string) {
 
 	secured := r.Group("/secured").Use(middleware.Auth())
 	secured.GET("/user", userHandler.HandleFetchUser)
+	secured.POST("/question", questionHandler.HandleCreate)
 
 	log.Println("Server running...")
 	if err := r.Run(addr); err != nil {
