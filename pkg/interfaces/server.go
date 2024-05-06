@@ -1,4 +1,4 @@
-package server
+package interfaces
 
 import (
 	"log"
@@ -6,8 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mikaijun/anli/pkg/infrastructure"
 	"github.com/mikaijun/anli/pkg/infrastructure/repositoryimpl"
-	"github.com/mikaijun/anli/pkg/interfaces/api/handler"
-	"github.com/mikaijun/anli/pkg/interfaces/api/middleware"
+	"github.com/mikaijun/anli/pkg/interfaces/handler"
 	"github.com/mikaijun/anli/pkg/usecase"
 )
 
@@ -27,7 +26,7 @@ func Serve(addr string) {
 	r.POST("/login", userHandler.HandleLogin)
 	r.GET("/logout", userHandler.HandleLogout)
 
-	secured := r.Group("/secured").Use(middleware.Auth())
+	secured := r.Group("/secured").Use(Middleware())
 	secured.GET("/user", userHandler.HandleFetchUser)
 	secured.POST("/question", questionHandler.HandleCreate)
 	secured.GET("/questions", questionHandler.HandleGetAll)

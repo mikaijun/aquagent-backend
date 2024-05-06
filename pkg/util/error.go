@@ -1,4 +1,4 @@
-package myerror
+package util
 
 // BadRequestError HTTP Status Code: 400
 type BadRequestError struct {

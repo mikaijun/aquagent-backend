@@ -1,4 +1,4 @@
-package middleware
+package interfaces
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 	"github.com/mikaijun/anli/pkg/util"
 )
 
-func Auth() gin.HandlerFunc {
+func Middleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		signedToken, err := c.Cookie("jwt")
 

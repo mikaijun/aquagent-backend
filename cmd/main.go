@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/mikaijun/anli/pkg/interfaces/api/server"
+	server "github.com/mikaijun/anli/pkg/interfaces"
 )
 
 var (

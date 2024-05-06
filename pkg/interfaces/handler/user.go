@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mikaijun/anli/pkg/myerror"
 	"github.com/mikaijun/anli/pkg/usecase"
 	"github.com/mikaijun/anli/pkg/util"
 )
@@ -51,10 +50,10 @@ func (h *userHandler) HandleSignup(c *gin.Context) {
 	user, err := h.useCase.Signup(c.Request.Context(), requestBody.Username, requestBody.Email, requestBody.Password)
 	if err != nil {
 		switch e := err.(type) {
-		case *myerror.InternalServerError:
+		case *util.InternalServerError:
 			c.JSON(http.StatusInternalServerError, gin.H{"error": e.Err.Error()})
 			return
-		case *myerror.BadRequestError:
+		case *util.BadRequestError:
 			c.JSON(http.StatusBadRequest, gin.H{"error": e.Err.Error()})
 			return
 		default:
@@ -93,10 +92,10 @@ func (h *userHandler) HandleLogin(c *gin.Context) {
 
 	if err != nil {
 		switch e := err.(type) {
-		case *myerror.InternalServerError:
+		case *util.InternalServerError:
 			c.JSON(http.StatusInternalServerError, gin.H{"error": e.Err.Error()})
 			return
-		case *myerror.BadRequestError:
+		case *util.BadRequestError:
 			c.JSON(http.StatusBadRequest, gin.H{"error": e.Err.Error()})
 			return
 		default:
@@ -142,10 +141,10 @@ func (h *userHandler) HandleFetchUser(c *gin.Context) {
 
 	if err != nil {
 		switch e := err.(type) {
-		case *myerror.InternalServerError:
+		case *util.InternalServerError:
 			c.JSON(http.StatusInternalServerError, gin.H{"error": e.Err.Error()})
 			return
-		case *myerror.BadRequestError:
+		case *util.BadRequestError:
 			c.JSON(http.StatusBadRequest, gin.H{"error": e.Err.Error()})
 			return
 		default:
