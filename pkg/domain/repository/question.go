@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/mikaijun/anli/pkg/domain/model"
+	"github.com/mikaijun/aquagent/pkg/domain/model"
 )
 
 type QuestionRepository interface {

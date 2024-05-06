@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mikaijun/anli/pkg/usecase"
-	"github.com/mikaijun/anli/pkg/util"
+	"github.com/mikaijun/aquagent/pkg/usecase"
+	"github.com/mikaijun/aquagent/pkg/util"
 )
 
 type UserHandler interface {

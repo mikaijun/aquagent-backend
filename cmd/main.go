@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	server "github.com/mikaijun/anli/pkg/interfaces"
+	server "github.com/mikaijun/aquagent/pkg/interfaces"
 )
 
 var (

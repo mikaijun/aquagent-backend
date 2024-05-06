@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mikaijun/anli/pkg/util"
+	"github.com/mikaijun/aquagent/pkg/util"
 )
 
 func Middleware() gin.HandlerFunc {

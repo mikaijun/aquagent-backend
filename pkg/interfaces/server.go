@@ -4,10 +4,10 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mikaijun/anli/pkg/infrastructure"
-	"github.com/mikaijun/anli/pkg/infrastructure/repositoryimpl"
-	"github.com/mikaijun/anli/pkg/interfaces/handler"
-	"github.com/mikaijun/anli/pkg/usecase"
+	"github.com/mikaijun/aquagent/pkg/infrastructure"
+	"github.com/mikaijun/aquagent/pkg/infrastructure/repositoryimpl"
+	"github.com/mikaijun/aquagent/pkg/interfaces/handler"
+	"github.com/mikaijun/aquagent/pkg/usecase"
 )
 
 var r *gin.Engine

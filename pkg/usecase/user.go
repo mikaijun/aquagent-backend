@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/mikaijun/anli/pkg/domain/model"
-	"github.com/mikaijun/anli/pkg/domain/repository"
-	"github.com/mikaijun/anli/pkg/util"
+	"github.com/mikaijun/aquagent/pkg/domain/model"
+	"github.com/mikaijun/aquagent/pkg/domain/repository"
+	"github.com/mikaijun/aquagent/pkg/util"
 )
 
 type UserUseCase interface {

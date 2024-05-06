@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mikaijun/anli/pkg/domain/model"
-	"github.com/mikaijun/anli/pkg/usecase"
-	"github.com/mikaijun/anli/pkg/util"
+	"github.com/mikaijun/aquagent/pkg/domain/model"
+	"github.com/mikaijun/aquagent/pkg/usecase"
+	"github.com/mikaijun/aquagent/pkg/util"
 )
 
 type QuestionHandler interface {

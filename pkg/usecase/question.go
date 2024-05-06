@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/mikaijun/anli/pkg/domain/model"
-	"github.com/mikaijun/anli/pkg/domain/repository"
+	"github.com/mikaijun/aquagent/pkg/domain/model"
+	"github.com/mikaijun/aquagent/pkg/domain/repository"
 )
 
 type QuestionUseCase interface {

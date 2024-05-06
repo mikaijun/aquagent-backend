@@ -1,4 +1,4 @@
-module github.com/mikaijun/anli
+module github.com/mikaijun/aquagent
 
 go 1.22.2
 
