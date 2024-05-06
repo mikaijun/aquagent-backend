@@ -2,6 +2,7 @@ package repositoryimpl
 
 import (
 	"context"
+	"errors"
 
 	"github.com/mikaijun/anli/pkg/infrastructure"
 
@@ -65,4 +66,29 @@ func (ri *questionRepositoryImpl) GetQuestions(ctx context.Context, userId int64
 		questions = append(questions, question)
 	}
 	return questions, nil
+}
+
+func (ri *questionRepositoryImpl) GetQuestion(ctx context.Context, questionId int64) (*model.Question, error) {
+	question := &model.Question{}
+	query := "SELECT id, user_id, title, content, file_path, created_at, updated_at FROM questions WHERE deleted_at IS NULL AND id = $1"
+
+	err := ri.db.QueryRowContext(ctx, query, questionId).Scan(
+		&question.ID,
+		&question.UserID,
+		&question.Title,
+		&question.Content,
+		&question.FilePath,
+		&question.CreatedAt,
+		&question.UpdatedAt,
+	)
+
+	if question.ID == 0 {
+		return &model.Question{}, errors.New("question not found")
+	}
+
+	if err != nil {
+		return &model.Question{}, err
+	}
+
+	return question, nil
 }

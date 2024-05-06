@@ -9,8 +9,9 @@ import (
 )
 
 type QuestionUseCase interface {
-	Create(c context.Context, question *model.Question) (*model.Question, error)
+	Get(c context.Context, id int64) (*model.Question, error)
 	GetAll(c context.Context, userId int64) ([]*model.Question, error)
+	Create(c context.Context, question *model.Question) (*model.Question, error)
 }
 
 type questionUseCase struct {
@@ -25,16 +26,17 @@ func NewQuestionUseCase(questionRepo repository.QuestionRepository) QuestionUseC
 	}
 }
 
-func (uc *questionUseCase) Create(c context.Context, question *model.Question) (*model.Question, error) {
+func (uc *questionUseCase) Get(c context.Context, id int64) (*model.Question, error) {
 	ctx, cancel := context.WithTimeout(c, uc.timeout)
 	defer cancel()
 
-	question, err := uc.repository.CreateQuestion(ctx, question)
+	question, err := uc.repository.GetQuestion(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
 	return question, nil
+
 }
 
 func (uc *questionUseCase) GetAll(c context.Context, userId int64) ([]*model.Question, error) {
@@ -47,4 +49,16 @@ func (uc *questionUseCase) GetAll(c context.Context, userId int64) ([]*model.Que
 	}
 
 	return questions, nil
+}
+
+func (uc *questionUseCase) Create(c context.Context, question *model.Question) (*model.Question, error) {
+	ctx, cancel := context.WithTimeout(c, uc.timeout)
+	defer cancel()
+
+	question, err := uc.repository.CreateQuestion(ctx, question)
+	if err != nil {
+		return nil, err
+	}
+
+	return question, nil
 }

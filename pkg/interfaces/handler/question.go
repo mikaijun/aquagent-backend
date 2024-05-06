@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -11,8 +12,9 @@ import (
 )
 
 type QuestionHandler interface {
-	HandleCreate(c *gin.Context)
+	HandleGet(c *gin.Context)
 	HandleGetAll(c *gin.Context)
+	HandleCreate(c *gin.Context)
 }
 
 type questionHandler struct {
@@ -23,6 +25,52 @@ func NewQuestionHandler(questionUseCase usecase.QuestionUseCase) QuestionHandler
 	return &questionHandler{
 		useCase: questionUseCase,
 	}
+}
+
+func (h *questionHandler) HandleGet(c *gin.Context) {
+	type response struct {
+		ID        int64  `json:"id"`
+		Title     string `json:"title"`
+		Content   string `json:"content"`
+		FilePath  string `json:"file_path"`
+		CreatedAt string `json:"created_at"`
+		UpdatedAt string `json:"updated_at"`
+	}
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	question, err := h.useCase.Get(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, &response{
+		ID:        question.ID,
+		Title:     question.Title,
+		Content:   question.Content,
+		FilePath:  question.FilePath,
+		CreatedAt: question.CreatedAt,
+		UpdatedAt: question.UpdatedAt,
+	})
+}
+
+func (h *questionHandler) HandleGetAll(c *gin.Context) {
+	userId, err := util.FindUserIdByCookie(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	questions, err := h.useCase.GetAll(c.Request.Context(), userId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, questions)
 }
 
 func (h *questionHandler) HandleCreate(c *gin.Context) {
@@ -76,19 +124,4 @@ func (h *questionHandler) HandleCreate(c *gin.Context) {
 		Title:   question.Title,
 		Content: question.Content,
 	})
-}
-
-func (h *questionHandler) HandleGetAll(c *gin.Context) {
-	userId, err := util.FindUserIdByCookie(c)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	questions, err := h.useCase.GetAll(c.Request.Context(), userId)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, questions)
 }

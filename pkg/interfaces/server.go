@@ -27,9 +27,11 @@ func Serve(addr string) {
 	r.GET("/logout", userHandler.HandleLogout)
 
 	secured := r.Group("/secured").Use(Middleware())
+
 	secured.GET("/user", userHandler.HandleFetchUser)
-	secured.POST("/question", questionHandler.HandleCreate)
 	secured.GET("/questions", questionHandler.HandleGetAll)
+	secured.GET("/question/:id", questionHandler.HandleGet)
+	secured.POST("/question", questionHandler.HandleCreate)
 
 	log.Println("Server running...")
 	if err := r.Run(addr); err != nil {
