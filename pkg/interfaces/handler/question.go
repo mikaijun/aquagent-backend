@@ -15,6 +15,7 @@ type QuestionHandler interface {
 	HandleGet(c *gin.Context)
 	HandleGetAll(c *gin.Context)
 	HandleCreate(c *gin.Context)
+	HandleUpdate(c *gin.Context)
 }
 
 type questionHandler struct {
@@ -123,5 +124,68 @@ func (h *questionHandler) HandleCreate(c *gin.Context) {
 		ID:      question.ID,
 		Title:   question.Title,
 		Content: question.Content,
+	})
+}
+
+func (h *questionHandler) HandleUpdate(c *gin.Context) {
+	type (
+		request struct {
+			Title    string `json:"title" binding:"required"`
+			Content  string `json:"content" binding:"required"`
+			FilePath string `json:"file_path"`
+		}
+		response struct {
+			ID        int64  `json:"id"`
+			Title     string `json:"title"`
+			Content   string `json:"content"`
+			FilePath  string `json:"file_path"`
+			CreatedAt string `json:"created_at"`
+			UpdatedAt string `json:"updated_at"`
+		}
+	)
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	requestBody := new(request)
+
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	userId, err := util.FindUserIdByCookie(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	question := &model.Question{
+		ID:        id,
+		Title:     requestBody.Title,
+		Content:   requestBody.Content,
+		UserID:    userId,
+		FilePath:  requestBody.FilePath,
+		CreatedAt: "",
+		UpdatedAt: time.Now().Format("2006-01-02 15:04:05"),
+		DeletedAt: "",
+	}
+
+	question, err = h.useCase.Update(c.Request.Context(), question)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, &response{
+		ID:        question.ID,
+		Title:     question.Title,
+		Content:   question.Content,
+		FilePath:  question.FilePath,
+		CreatedAt: question.CreatedAt,
+		UpdatedAt: question.UpdatedAt,
 	})
 }

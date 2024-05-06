@@ -32,6 +32,7 @@ func Serve(addr string) {
 	secured.GET("/questions", questionHandler.HandleGetAll)
 	secured.GET("/question/:id", questionHandler.HandleGet)
 	secured.POST("/question", questionHandler.HandleCreate)
+	secured.PUT("/question/:id", questionHandler.HandleUpdate)
 
 	log.Println("Server running...")
 	if err := r.Run(addr); err != nil {

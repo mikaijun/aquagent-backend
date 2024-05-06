@@ -92,3 +92,20 @@ func (ri *questionRepositoryImpl) GetQuestion(ctx context.Context, questionId in
 
 	return question, nil
 }
+
+func (ri *questionRepositoryImpl) UpdateQuestion(ctx context.Context, question *model.Question) (*model.Question, error) {
+	query := "UPDATE questions SET title = $1, content = $2, file_path = $3, updated_at = $4 WHERE id = $5 AND deleted_at IS NULL"
+	_, err := ri.db.ExecContext(
+		ctx,
+		query,
+		question.Title,
+		question.Content,
+		question.FilePath,
+		question.UpdatedAt,
+		question.ID,
+	)
+	if err != nil {
+		return &model.Question{}, err
+	}
+	return question, nil
+}
