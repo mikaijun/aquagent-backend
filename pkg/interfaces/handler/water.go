@@ -48,6 +48,18 @@ func (h *waterHandler) HandleGet(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	userId, err := util.FindUserIdByCookie(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if water.UserID != userId {
+		c.JSON(http.StatusForbidden, gin.H{"error": "you are not allowed to access this data"})
+		return
+	}
+
 	c.JSON(http.StatusOK, &response{
 		ID:        water.ID,
 		Volume:    water.Volume,
