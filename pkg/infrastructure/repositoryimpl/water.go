@@ -38,12 +38,13 @@ func (ri *waterRepositoryImpl) CreateWater(ctx context.Context, water *model.Wat
 }
 
 func (ri *waterRepositoryImpl) GetWaters(ctx context.Context, userId int64) ([]*model.Water, error) {
-	var waters []*model.Water
+	var waters []*model.Water = []*model.Water{}
 	query := "SELECT id, user_id, volume, created_at, updated_at FROM waters WHERE user_id = $1 ORDER BY created_at DESC"
 	rows, err := ri.db.QueryContext(ctx, query, userId)
 	if err != nil {
 		return nil, err
 	}
+
 	defer rows.Close()
 
 	for rows.Next() {
