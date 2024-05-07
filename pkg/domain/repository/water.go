@@ -11,4 +11,5 @@ type WaterRepository interface {
 	GetWaters(ctx context.Context, userId int64) ([]*model.Water, error)
 	GetWater(ctx context.Context, waterId int64) (*model.Water, error)
 	UpdateWater(ctx context.Context, water *model.Water) (*model.Water, error)
+	DeleteWater(ctx context.Context, waterId int64) error
 }

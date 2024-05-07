@@ -13,6 +13,7 @@ type WaterUseCase interface {
 	GetAll(c context.Context, userId int64) ([]*model.Water, error)
 	Create(c context.Context, water *model.Water) (*model.Water, error)
 	Update(c context.Context, water *model.Water) (*model.Water, error)
+	Delete(c context.Context, id int64) error
 }
 
 type waterUseCase struct {
@@ -68,10 +69,32 @@ func (uc *waterUseCase) Update(c context.Context, water *model.Water) (*model.Wa
 	ctx, cancel := context.WithTimeout(c, uc.timeout)
 	defer cancel()
 
-	water, err := uc.repository.UpdateWater(ctx, water)
+	_, err := uc.repository.GetWater(ctx, water.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	water, err = uc.repository.UpdateWater(ctx, water)
 	if err != nil {
 		return nil, err
 	}
 
 	return water, nil
+}
+
+func (uc *waterUseCase) Delete(c context.Context, id int64) error {
+	ctx, cancel := context.WithTimeout(c, uc.timeout)
+	defer cancel()
+
+	_, err := uc.repository.GetWater(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	err = uc.repository.DeleteWater(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

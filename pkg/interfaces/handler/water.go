@@ -16,6 +16,7 @@ type WaterHandler interface {
 	HandleGetAll(c *gin.Context)
 	HandleCreate(c *gin.Context)
 	HandleUpdate(c *gin.Context)
+	HandleDelete(c *gin.Context)
 }
 
 type waterHandler struct {
@@ -124,7 +125,6 @@ func (h *waterHandler) HandleUpdate(c *gin.Context) {
 		response struct {
 			ID        int64  `json:"id"`
 			Volume    int64  `json:"volume" binding:"required"`
-			CreatedAt string `json:"created_at"`
 			UpdatedAt string `json:"updated_at"`
 		}
 	)
@@ -164,7 +164,29 @@ func (h *waterHandler) HandleUpdate(c *gin.Context) {
 	c.JSON(http.StatusOK, &response{
 		ID:        water.ID,
 		Volume:    water.Volume,
-		CreatedAt: water.CreatedAt,
 		UpdatedAt: water.UpdatedAt,
 	})
+}
+
+func (h *waterHandler) HandleDelete(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	_, err = util.FindUserIdByCookie(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = h.useCase.Delete(c.Request.Context(), id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "water delete successful"})
 }

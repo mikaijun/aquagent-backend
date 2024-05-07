@@ -100,3 +100,12 @@ func (ri *waterRepositoryImpl) UpdateWater(ctx context.Context, water *model.Wat
 	}
 	return water, nil
 }
+
+func (ri *waterRepositoryImpl) DeleteWater(ctx context.Context, waterId int64) error {
+	query := "DELETE FROM waters WHERE id = $1"
+	_, err := ri.db.ExecContext(ctx, query, waterId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
