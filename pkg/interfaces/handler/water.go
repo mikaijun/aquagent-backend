@@ -31,9 +31,7 @@ func NewWaterHandler(waterUseCase usecase.WaterUseCase) WaterHandler {
 func (h *waterHandler) HandleGet(c *gin.Context) {
 	type response struct {
 		ID        int64  `json:"id"`
-		Title     string `json:"title"`
-		Content   string `json:"content"`
-		FilePath  string `json:"file_path"`
+		Volume    int64  `json:"volume"`
 		CreatedAt string `json:"created_at"`
 		UpdatedAt string `json:"updated_at"`
 	}
@@ -51,9 +49,7 @@ func (h *waterHandler) HandleGet(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &response{
 		ID:        water.ID,
-		Title:     water.Title,
-		Content:   water.Content,
-		FilePath:  water.FilePath,
+		Volume:    water.Volume,
 		CreatedAt: water.CreatedAt,
 		UpdatedAt: water.UpdatedAt,
 	})
@@ -77,18 +73,13 @@ func (h *waterHandler) HandleGetAll(c *gin.Context) {
 func (h *waterHandler) HandleCreate(c *gin.Context) {
 	type (
 		request struct {
-			Title   string `json:"title" binding:"required"`
-			Content string `json:"content" binding:"required"`
+			Volume int64 `json:"volume" binding:"required"`
 		}
 		response struct {
 			ID        int64  `json:"id"`
-			UserID    int64  `json:"user_id"`
-			Title     string `json:"title"`
-			Content   string `json:"content"`
-			FilePath  string `json:"file_path"`
+			Volume    int64  `json:"volume" binding:"required"`
 			CreatedAt string `json:"created_at"`
 			UpdatedAt string `json:"updated_at"`
-			DeletedAt string `json:"deleted_at"`
 		}
 	)
 
@@ -106,13 +97,10 @@ func (h *waterHandler) HandleCreate(c *gin.Context) {
 	}
 
 	water := &model.Water{
-		Title:     requestBody.Title,
-		Content:   requestBody.Content,
+		Volume:    requestBody.Volume,
 		UserID:    userId,
-		FilePath:  "",
 		CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
 		UpdatedAt: time.Now().Format("2006-01-02 15:04:05"),
-		DeletedAt: "",
 	}
 
 	water, err = h.useCase.Create(c.Request.Context(), water)
@@ -121,24 +109,21 @@ func (h *waterHandler) HandleCreate(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, &response{
-		ID:      water.ID,
-		Title:   water.Title,
-		Content: water.Content,
+		ID:        water.ID,
+		Volume:    water.Volume,
+		CreatedAt: water.CreatedAt,
+		UpdatedAt: water.UpdatedAt,
 	})
 }
 
 func (h *waterHandler) HandleUpdate(c *gin.Context) {
 	type (
 		request struct {
-			Title    string `json:"title" binding:"required"`
-			Content  string `json:"content" binding:"required"`
-			FilePath string `json:"file_path"`
+			Volume int64 `json:"volume" binding:"required"`
 		}
 		response struct {
 			ID        int64  `json:"id"`
-			Title     string `json:"title"`
-			Content   string `json:"content"`
-			FilePath  string `json:"file_path"`
+			Volume    int64  `json:"volume" binding:"required"`
 			CreatedAt string `json:"created_at"`
 			UpdatedAt string `json:"updated_at"`
 		}
@@ -165,13 +150,9 @@ func (h *waterHandler) HandleUpdate(c *gin.Context) {
 
 	water := &model.Water{
 		ID:        id,
-		Title:     requestBody.Title,
-		Content:   requestBody.Content,
+		Volume:    requestBody.Volume,
 		UserID:    userId,
-		FilePath:  requestBody.FilePath,
-		CreatedAt: "",
 		UpdatedAt: time.Now().Format("2006-01-02 15:04:05"),
-		DeletedAt: "",
 	}
 
 	water, err = h.useCase.Update(c.Request.Context(), water)
@@ -182,9 +163,7 @@ func (h *waterHandler) HandleUpdate(c *gin.Context) {
 
 	c.JSON(http.StatusOK, &response{
 		ID:        water.ID,
-		Title:     water.Title,
-		Content:   water.Content,
-		FilePath:  water.FilePath,
+		Volume:    water.Volume,
 		CreatedAt: water.CreatedAt,
 		UpdatedAt: water.UpdatedAt,
 	})

@@ -26,13 +26,13 @@ func Serve(addr string) {
 	r.POST("/login", userHandler.HandleLogin)
 	r.GET("/logout", userHandler.HandleLogout)
 
-	secured := r.Group("/secured").Use(Middleware())
+	secured := r.Group("/v1").Use(Middleware())
 
-	secured.GET("/user", userHandler.HandleFetchUser)
+	secured.GET("/users", userHandler.HandleFetchUser)
 	secured.GET("/waters", waterHandler.HandleGetAll)
-	secured.GET("/water/:id", waterHandler.HandleGet)
-	secured.POST("/water", waterHandler.HandleCreate)
-	secured.PUT("/water/:id", waterHandler.HandleUpdate)
+	secured.GET("/waters/:id", waterHandler.HandleGet)
+	secured.POST("/waters", waterHandler.HandleCreate)
+	secured.PUT("/waters/:id", waterHandler.HandleUpdate)
 
 	log.Println("Server running...")
 	if err := r.Run(addr); err != nil {
