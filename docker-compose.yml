@@ -9,13 +9,11 @@ services:
     image: postgres:15.1-alpine
     # コンテナの名前を指定します。
     container_name: postgres
-    env_file:
-      - .env
     # 環境変数を設定します。
     environment:
-      - POSTGRES_USER=${DBUser}
-      - POSTGRES_PASSWORD=${DBPassword}
-      - POSTGRES_DB=${DBName}
+      POSTGRES_USER: ${DBUser}
+      POSTGRES_PASSWORD: ${DBPassword}
+      POSTGRES_DB: ${DBName}
     # ポートの指定（HOST:CONTAINER）
     ports:
       - 5432:5432
