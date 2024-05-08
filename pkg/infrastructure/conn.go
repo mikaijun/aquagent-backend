@@ -23,7 +23,7 @@ var Conn *sql.DB
 func init() {
 	var err error
 
-	err = godotenv.Load(".env")
+	err = godotenv.Load()
 	if err != nil {
 		log.Fatal("failed to load .env file: ", err)
 	}
