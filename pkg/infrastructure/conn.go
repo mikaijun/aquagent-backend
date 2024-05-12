@@ -34,6 +34,12 @@ func init() {
 	port := os.Getenv("DBPort")
 	database := os.Getenv("DBName")
 
+	fmt.Println(os.Getenv("DBUser"))
+	fmt.Println(os.Getenv("DBPassword"))
+	fmt.Println(os.Getenv("DBHost"))
+	fmt.Println(os.Getenv("DBPort"))
+	fmt.Println(os.Getenv("DBName"))
+
 	Conn, err = sql.Open("postgres",
 		fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=disable", user, password, host, port, database))
 
