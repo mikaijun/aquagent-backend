@@ -31,17 +31,11 @@ func init() {
 	user := os.Getenv("DBUser")
 	password := os.Getenv("DBPassword")
 	host := os.Getenv("DBHost")
-	port := os.Getenv("DBPort")
+	// port := os.Getenv("DBPort")
 	database := os.Getenv("DBName")
 
-	log.Println(os.Getenv("DBUser"))
-	log.Println(os.Getenv("DBPassword"))
-	log.Println(os.Getenv("DBHost"))
-	log.Println(os.Getenv("DBPort"))
-	log.Println(os.Getenv("DBName"))
-
 	Conn, err = sql.Open("postgres",
-		fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=disable", user, password, host, port, database))
+		fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=disable", user, password, host, "5432", database))
 
 	if err != nil {
 		log.Fatal("OpenError: ", err)
