@@ -43,5 +43,10 @@ func init() {
 
 	if err = Conn.Ping(); err != nil {
 		log.Fatal("PingError: ", err)
+		log.Fatal("user: ", user)
+		log.Fatal("password: ", password)
+		log.Fatal("host: ", host)
+		log.Fatal("port: ", port)
+		log.Fatal("database: ", database)
 	}
 }
