@@ -41,7 +41,7 @@ func init() {
 		log.Fatal("OpenError: ", err)
 	}
 
-	// if err = Conn.Ping(); err != nil {
-	// 	log.Fatal("PingError: ", err)
-	// }
+	if err = Conn.Ping(); err != nil {
+		log.Fatal("PingError: ", err)
+	}
 }
