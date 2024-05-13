@@ -22,10 +22,18 @@ var Conn *sql.DB
 
 func init() {
 	var err error
+	var envFile string
+	goEnv := os.Getenv("GO_ENV")
 
-	err = godotenv.Load()
+	if goEnv == "" {
+		envFile = ".env"
+	} else {
+		envFile = fmt.Sprintf(".env.%s", goEnv)
+	}
+
+	err = godotenv.Load(envFile)
 	if err != nil {
-		log.Fatal("failed to load .env file: ", err)
+		log.Fatalf("Error loading %s file", envFile)
 	}
 
 	user := os.Getenv("DBUser")
