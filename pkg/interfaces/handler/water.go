@@ -13,7 +13,7 @@ import (
 
 type WaterHandler interface {
 	HandleGet(c *gin.Context)
-	HandleGetAll(c *gin.Context)
+	HandleSearch(c *gin.Context)
 	HandleCreate(c *gin.Context)
 	HandleUpdate(c *gin.Context)
 	HandleDelete(c *gin.Context)
@@ -68,14 +68,26 @@ func (h *waterHandler) HandleGet(c *gin.Context) {
 	})
 }
 
-func (h *waterHandler) HandleGetAll(c *gin.Context) {
+func (h *waterHandler) HandleSearch(c *gin.Context) {
 	userId, err := util.FindUserIdByCookie(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	waters, err := h.useCase.GetAll(c.Request.Context(), userId)
+	filters := make(map[string]interface{})
+
+	date := c.Query("date")
+	if date != "" {
+		filters["date"] = date
+	}
+
+	month := c.Query("month")
+	if month != "" {
+		filters["month"] = month
+	}
+
+	waters, err := h.useCase.Search(c.Request.Context(), userId, filters)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

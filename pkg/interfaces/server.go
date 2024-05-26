@@ -29,7 +29,7 @@ func Serve(addr string) {
 	group := r.Group("/v1").Use(Middleware())
 
 	group.GET("/users", userHandler.HandleFetchUser)
-	group.GET("/waters", waterHandler.HandleGetAll)
+	group.GET("/waters", waterHandler.HandleSearch)
 	group.GET("/waters/:id", waterHandler.HandleGet)
 	group.POST("/waters", waterHandler.HandleCreate)
 	group.PUT("/waters/:id", waterHandler.HandleUpdate)

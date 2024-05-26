@@ -10,7 +10,7 @@ import (
 
 type WaterUseCase interface {
 	Get(c context.Context, id int64) (*model.Water, error)
-	GetAll(c context.Context, userId int64) ([]*model.Water, error)
+	Search(c context.Context, userId int64, filter map[string]interface{}) ([]*model.Water, error)
 	Create(c context.Context, water *model.Water) (*model.Water, error)
 	Update(c context.Context, water *model.Water) (*model.Water, error)
 	Delete(c context.Context, id int64) error
@@ -41,11 +41,11 @@ func (uc *waterUseCase) Get(c context.Context, id int64) (*model.Water, error) {
 
 }
 
-func (uc *waterUseCase) GetAll(c context.Context, userId int64) ([]*model.Water, error) {
+func (uc *waterUseCase) Search(c context.Context, userId int64, filter map[string]interface{}) ([]*model.Water, error) {
 	ctx, cancel := context.WithTimeout(c, uc.timeout)
 	defer cancel()
 
-	waters, err := uc.repository.GetWaters(ctx, userId)
+	waters, err := uc.repository.GetWaters(ctx, userId, filter)
 	if err != nil {
 		return nil, err
 	}

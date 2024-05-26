@@ -37,14 +37,29 @@ func (ri *waterRepositoryImpl) CreateWater(ctx context.Context, water *model.Wat
 	return water, nil
 }
 
-func (ri *waterRepositoryImpl) GetWaters(ctx context.Context, userId int64) ([]*model.Water, error) {
+func (ri *waterRepositoryImpl) GetWaters(ctx context.Context, userId int64, filter map[string]interface{}) ([]*model.Water, error) {
 	var waters []*model.Water = []*model.Water{}
-	query := "SELECT id, user_id, volume, created_at, updated_at FROM waters WHERE user_id = $1 ORDER BY created_at DESC"
-	rows, err := ri.db.QueryContext(ctx, query, userId)
+	query := "SELECT id, user_id, volume, created_at, updated_at FROM waters WHERE user_id = $1"
+	args := []interface{}{userId}
+
+	// 日程指定 (2024/01/01 など)
+	if date, ok := filter["date"].(string); ok {
+		query += " AND DATE(created_at) = $2"
+		args = append(args, date)
+	}
+
+	// 期間指定 (2024年の5月 など)
+	if month, ok := filter["month"].(string); ok {
+		query += " AND DATE_TRUNC('month', created_at) = DATE_TRUNC('month', TO_DATE($2, 'YYYY-MM'))"
+		args = append(args, month)
+	}
+
+	query += " ORDER BY created_at DESC"
+
+	rows, err := ri.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	for rows.Next() {
