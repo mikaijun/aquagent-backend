@@ -3,6 +3,7 @@ package repositoryimpl
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/mikaijun/aquagent/pkg/infrastructure"
 
@@ -13,6 +14,9 @@ import (
 type waterRepositoryImpl struct {
 	db infrastructure.DBTX
 }
+
+var createdAt time.Time
+var updatedAt time.Time
 
 func NewWaterRepositoryImpl(db infrastructure.DBTX) repository.WaterRepository {
 	return &waterRepositoryImpl{db: db}
@@ -68,9 +72,11 @@ func (ri *waterRepositoryImpl) GetWaters(ctx context.Context, userId int64, filt
 			&water.ID,
 			&water.UserID,
 			&water.Volume,
-			&water.CreatedAt,
-			&water.UpdatedAt,
+			&createdAt,
+			&updatedAt,
 		)
+		water.CreatedAt = createdAt.Format("2006-01-02 15:04:05")
+		water.UpdatedAt = updatedAt.Format("2006-01-02 15:04:05")
 		if err != nil {
 			return nil, err
 		}
