@@ -25,6 +25,8 @@ func Serve(addr string) {
 	r.POST("/signup", userHandler.HandleSignup)
 	r.POST("/login", userHandler.HandleLogin)
 	r.GET("/logout", userHandler.HandleLogout)
+	// NOTE: Render.comのスリープ対策のため、定期的にアクセスするエンドポイントを追加
+	r.GET("/cron")
 
 	group := r.Group("/v1").Use(Middleware())
 
