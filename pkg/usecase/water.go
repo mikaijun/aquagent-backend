@@ -9,10 +9,8 @@ import (
 )
 
 type WaterUseCase interface {
-	Get(c context.Context, id int64) (*model.Water, error)
 	Search(c context.Context, userId int64, filter map[string]interface{}) ([]*model.Water, error)
 	Create(c context.Context, water *model.Water) (*model.Water, error)
-	Update(c context.Context, water *model.Water) (*model.Water, error)
 	Delete(c context.Context, id int64) error
 }
 
@@ -26,19 +24,6 @@ func NewWaterUseCase(waterRepo repository.WaterRepository) WaterUseCase {
 		repository: waterRepo,
 		timeout:    time.Duration(2) * time.Second,
 	}
-}
-
-func (uc *waterUseCase) Get(c context.Context, id int64) (*model.Water, error) {
-	ctx, cancel := context.WithTimeout(c, uc.timeout)
-	defer cancel()
-
-	water, err := uc.repository.GetWater(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-
-	return water, nil
-
 }
 
 func (uc *waterUseCase) Search(c context.Context, userId int64, filter map[string]interface{}) ([]*model.Water, error) {
@@ -58,23 +43,6 @@ func (uc *waterUseCase) Create(c context.Context, water *model.Water) (*model.Wa
 	defer cancel()
 
 	water, err := uc.repository.CreateWater(ctx, water)
-	if err != nil {
-		return nil, err
-	}
-
-	return water, nil
-}
-
-func (uc *waterUseCase) Update(c context.Context, water *model.Water) (*model.Water, error) {
-	ctx, cancel := context.WithTimeout(c, uc.timeout)
-	defer cancel()
-
-	_, err := uc.repository.GetWater(ctx, water.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	water, err = uc.repository.UpdateWater(ctx, water)
 	if err != nil {
 		return nil, err
 	}

@@ -32,9 +32,7 @@ func Serve(addr string) {
 
 	group.GET("/users", userHandler.HandleFetchUser)
 	group.GET("/waters", waterHandler.HandleSearch)
-	group.GET("/waters/:id", waterHandler.HandleGet)
 	group.POST("/waters", waterHandler.HandleCreate)
-	group.PUT("/waters/:id", waterHandler.HandleUpdate)
 	group.DELETE("/waters/:id", waterHandler.HandleDelete)
 
 	log.Println("Server running...")
