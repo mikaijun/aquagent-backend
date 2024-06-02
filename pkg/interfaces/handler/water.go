@@ -3,7 +3,6 @@ package handler
 import (
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mikaijun/aquagent/pkg/domain/model"
@@ -57,13 +56,8 @@ func (h *waterHandler) HandleSearch(c *gin.Context) {
 func (h *waterHandler) HandleCreate(c *gin.Context) {
 	type (
 		request struct {
-			Volume int64 `json:"volume" binding:"required"`
-		}
-		response struct {
-			ID        int64  `json:"id"`
-			Volume    int64  `json:"volume" binding:"required"`
-			CreatedAt string `json:"created_at"`
-			UpdatedAt string `json:"updated_at"`
+			Volume  int64  `json:"volume" binding:"required"`
+			DrankAt string `json:"drank_at" binding:"required"`
 		}
 	)
 
@@ -81,10 +75,9 @@ func (h *waterHandler) HandleCreate(c *gin.Context) {
 	}
 
 	water := &model.Water{
-		Volume:    requestBody.Volume,
-		UserID:    userId,
-		CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
-		UpdatedAt: time.Now().Format("2006-01-02 15:04:05"),
+		Volume:  requestBody.Volume,
+		UserID:  userId,
+		DrankAt: requestBody.DrankAt,
 	}
 
 	water, err = h.useCase.Create(c.Request.Context(), water)
@@ -92,12 +85,7 @@ func (h *waterHandler) HandleCreate(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, &response{
-		ID:        water.ID,
-		Volume:    water.Volume,
-		CreatedAt: water.CreatedAt,
-		UpdatedAt: water.UpdatedAt,
-	})
+	c.JSON(http.StatusOK, water)
 }
 
 func (h *waterHandler) HandleDelete(c *gin.Context) {
