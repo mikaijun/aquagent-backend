@@ -45,6 +45,11 @@ func (h *waterHandler) HandleSearch(c *gin.Context) {
 		filters["month"] = month
 	}
 
+	pastWeek := c.Query("pastWeek")
+	if pastWeek != "" {
+		filters["pastWeek"] = pastWeek
+	}
+
 	waters, err := h.useCase.Search(c.Request.Context(), userId, filters)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
