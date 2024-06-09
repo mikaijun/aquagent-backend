@@ -45,9 +45,14 @@ func (h *waterHandler) HandleSearch(c *gin.Context) {
 		filters["month"] = month
 	}
 
-	pastWeek := c.Query("pastWeek")
-	if pastWeek != "" {
-		filters["pastWeek"] = pastWeek
+	start := c.Query("start")
+	if start != "" {
+		filters["start"] = start
+	}
+
+	end := c.Query("end")
+	if end != "" {
+		filters["end"] = end
 	}
 
 	waters, err := h.useCase.Search(c.Request.Context(), userId, filters)

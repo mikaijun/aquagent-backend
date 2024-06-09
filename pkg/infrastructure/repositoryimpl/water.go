@@ -50,10 +50,17 @@ func (ri *waterRepositoryImpl) GetWaters(ctx context.Context, userId int64, filt
 		args = append(args, date)
 	}
 
-	// 直近7日間(月曜開始、日曜終了)
-	if _, ok := filter["pastWeek"].(string); ok {
-		query += " AND drank_at >= DATE_TRUNC('week', NOW())"
-		query += " AND DATE(drank_at) <= DATE(NOW())"
+	// 指定した日付以降(その日も含む)
+	if start, ok := filter["start"].(string); ok {
+		query += " AND DATE(drank_at) >= $2"
+		args = append(args, start)
+	}
+
+	// 指定した日付以前(その日も含む)。startと一緒に使う想定
+	if end, ok := filter["end"].(string); ok {
+		query += " AND DATE(drank_at) <= $3"
+		args = append(args, end)
+
 	}
 
 	// 期間指定 (2024年の5月 など)
