@@ -35,16 +35,6 @@ func (h *waterHandler) HandleSearch(c *gin.Context) {
 
 	filters := make(map[string]interface{})
 
-	date := c.Query("date")
-	if date != "" {
-		filters["date"] = date
-	}
-
-	month := c.Query("month")
-	if month != "" {
-		filters["month"] = month
-	}
-
 	start := c.Query("start")
 	if start != "" {
 		filters["start"] = start

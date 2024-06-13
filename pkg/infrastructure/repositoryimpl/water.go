@@ -44,12 +44,6 @@ func (ri *waterRepositoryImpl) GetWaters(ctx context.Context, userId int64, filt
 	query := "SELECT id, user_id, volume, drank_at FROM waters WHERE user_id = $1"
 	args := []interface{}{userId}
 
-	// 日程指定 (2024/01/01 など)
-	if date, ok := filter["date"].(string); ok {
-		query += " AND DATE(drank_at) = $2"
-		args = append(args, date)
-	}
-
 	// 指定した日付以降(その日も含む)
 	if start, ok := filter["start"].(string); ok {
 		query += " AND DATE(drank_at) >= $2"
@@ -61,12 +55,6 @@ func (ri *waterRepositoryImpl) GetWaters(ctx context.Context, userId int64, filt
 		query += " AND DATE(drank_at) <= $3"
 		args = append(args, end)
 
-	}
-
-	// 期間指定 (2024年の5月 など)
-	if month, ok := filter["month"].(string); ok {
-		query += " AND DATE_TRUNC('month', drank_at) = DATE_TRUNC('month', TO_DATE($2, 'YYYY-MM'))"
-		args = append(args, month)
 	}
 
 	query += " ORDER BY drank_at DESC"
