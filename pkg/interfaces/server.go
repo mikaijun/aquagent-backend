@@ -25,7 +25,7 @@ func Serve(addr string) {
 	r.POST("/signup", userHandler.HandleSignup)
 	r.POST("/login", userHandler.HandleLogin)
 	r.GET("/logout", userHandler.HandleLogout)
-	r.POST("/random", waterHandler.HandleCreateRandom)
+	r.GET("/random", waterHandler.HandleCreateRandom)
 	// NOTE: Render.comのスリープ対策のため、定期的にアクセスするエンドポイントを追加
 	r.GET("/cron")
 
