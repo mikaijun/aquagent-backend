@@ -11,6 +11,7 @@ import (
 type WaterUseCase interface {
 	Search(c context.Context, userId int64, filter map[string]interface{}) ([]*model.Water, error)
 	Create(c context.Context, water *model.Water) (*model.Water, error)
+	CreateRandomWaters(c context.Context) ([]*model.Water, error)
 	Delete(c context.Context, id int64) error
 }
 
@@ -48,6 +49,18 @@ func (uc *waterUseCase) Create(c context.Context, water *model.Water) (*model.Wa
 	}
 
 	return water, nil
+}
+
+func (uc *waterUseCase) CreateRandomWaters(c context.Context) ([]*model.Water, error) {
+	ctx, cancel := context.WithTimeout(c, uc.timeout)
+	defer cancel()
+
+	waters, err := uc.repository.CreateRandomWaters(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return waters, nil
 }
 
 func (uc *waterUseCase) Delete(c context.Context, id int64) error {

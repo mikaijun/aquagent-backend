@@ -13,6 +13,7 @@ import (
 type WaterHandler interface {
 	HandleSearch(c *gin.Context)
 	HandleCreate(c *gin.Context)
+	HandleCreateRandom(c *gin.Context)
 	HandleDelete(c *gin.Context)
 }
 
@@ -86,6 +87,16 @@ func (h *waterHandler) HandleCreate(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, water)
+}
+
+func (h *waterHandler) HandleCreateRandom(c *gin.Context) {
+	waters, err := h.useCase.CreateRandomWaters(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, waters)
+
 }
 
 func (h *waterHandler) HandleDelete(c *gin.Context) {

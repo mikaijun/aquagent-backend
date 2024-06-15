@@ -3,6 +3,7 @@ package repositoryimpl
 import (
 	"context"
 	"errors"
+	"math/rand"
 	"time"
 
 	"github.com/mikaijun/aquagent/pkg/infrastructure"
@@ -37,6 +38,42 @@ func (ri *waterRepositoryImpl) CreateWater(ctx context.Context, water *model.Wat
 
 	water.ID = int64(lastInsertId)
 	return water, nil
+}
+
+func (ri *waterRepositoryImpl) CreateRandomWaters(ctx context.Context) ([]*model.Water, error) {
+	query := "INSERT INTO waters (user_id, volume, drank_at) VALUES ($1, $2, $3) returning id"
+	now := time.Now()
+	today := now.Truncate(24 * time.Hour)
+	var waters []*model.Water
+
+	for i := 0; i < 5; i++ {
+		volume := rand.Int63n(10)*100 + 100
+		randomSeconds := rand.Intn(24 * 60 * 60)
+		randomTime := today.Add(time.Duration(randomSeconds) * time.Second)
+
+		drankAt := randomTime.Format("2006-01-02 15:04:05")
+
+		water := &model.Water{
+			UserID:  1,
+			Volume:  volume,
+			DrankAt: drankAt,
+		}
+
+		err := ri.db.QueryRowContext(
+			ctx,
+			query,
+			water.UserID,
+			water.Volume,
+			water.DrankAt,
+		).Scan(&water.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		waters = append(waters, water)
+	}
+
+	return waters, nil
 }
 
 func (ri *waterRepositoryImpl) GetWaters(ctx context.Context, userId int64, filter map[string]interface{}) ([]*model.Water, error) {
