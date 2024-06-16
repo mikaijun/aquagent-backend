@@ -20,4 +20,5 @@ https://aquagent-frontend.vercel.app/
 - gin-gonic(v1.8.2)
 - golang-jwt(v4.5.0)
 - godotenv(v1.5.1)
-- crypto(v0.22.0) 
+- crypto(v0.22.0)
+- Render(デプロイ機能)
