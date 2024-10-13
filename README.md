@@ -1,11 +1,3 @@
-※こちらはAPIサーバーのリポジトリです。
-フロントエンドのリポジトリは[こちら](https://github.com/mikaijun/aquagent-frontend)になります。
-
-# アプリケーションURL
-https://aquagent-frontend.vercel.app/
-
-ログインする時にメールアドレスや各種SNSは不要です(お試しアカウントでログインできます)
-
 # 概要
 水分摂取量を管理するアプリ
 
